@@ -1,0 +1,50 @@
+Vercel is auto-detecting Python instead of treating it as a static site. The fix is to explicitly tell Vercel "this is a static site, no framework, no build".
+📁 Updated vercel.json — Explicit Static Site
+{
+  "version": 2,
+  "public": true,
+  "framework": null,
+  "buildCommand": null,
+  "installCommand": null,
+  "outputDirectory": ".",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/checkout", "destination": "/checkout.html" },
+    { "source": "/checkout/payment/success", "destination": "/checkout.html" },
+    { "source": "/checkout/payment/error", "destination": "/checkout.html" },
+    { "source": "/checkout/payment/cancelled", "destination": "/checkout.html" },
+    { "source": "/", "destination": "/checkout.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "geolocation=(), microphone=(), camera=()" },
+        { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" }
+      ]
+    }
+  ]
+}
+📁 Updated package.json — Explicit Static
+{
+  "name": "checkout-billing-payflow-buzz",
+  "version": "1.0.0",
+  "description": "PayFlow Billing Checkout — billing.payflow.buzz",
+  "private": true,
+  "scripts": {
+    "build": "exit 0"
+  }
+}
+🔑 Key changes that fix the error:
+| Setting | Before | After | Why | |---|---|---|---| | "framework" | (not set) | null | Tells Vercel: no framework, don't auto-detect Python/Next/etc | | "buildCommand" | null | null | No build step | | "installCommand" | (not set) | null | Don't install anything (no node_modules, no pip) | | "build" script | echo '...' | exit 0 | Clean exit, no output |
+📁 Final structure — exactly 3 files, nothing else:
+checkout-billing.payflow.buzz/
+├── package.json
+├── vercel.json
+└── checkout.html
+Important: Make sure there are no other files in the repo — no main.py, no requirements.txt, no runtime.txt. If any Python file exists in the repo, delete it. Vercel sees a .py file and assumes Python project.
+Push and redeploy — Vercel will now serve checkout.html as a static site. ✅

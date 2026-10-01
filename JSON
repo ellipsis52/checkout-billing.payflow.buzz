@@ -1,0 +1,43 @@
+{
+  "name": "billing-payflow-checkout",
+  "version": "1.0.0",
+  "description": "PayFlow Billing Checkout — billing.payflow.buzz",
+  "private": true,
+  "scripts": {
+    "build": "echo 'Static site — no build needed'",
+    "dev": "echo 'Use Vercel dev'"
+  }
+}
+📁 Updated vercel.json
+{
+  "version": 2,
+  "public": true,
+  "buildCommand": null,
+  "outputDirectory": ".",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/checkout", "destination": "/checkout.html" },
+    { "source": "/checkout/payment/success", "destination": "/checkout.html" },
+    { "source": "/checkout/payment/error", "destination": "/checkout.html" },
+    { "source": "/checkout/payment/cancelled", "destination": "/checkout.html" },
+    { "source": "/", "destination": "/checkout.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "geolocation=(), microphone=(), camera=()" },
+        { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" }
+      ]
+    }
+  ]
+}
+📁 Final Project Structure
+billing-payflow-checkout/
+├── package.json      ← NEW (tells Vercel this is a project)
+├── vercel.json       ← UPDATED (buildCommand: null, outputDirectory: ".")
+└── checkout.html     ← The full checkout page (unchanged)
